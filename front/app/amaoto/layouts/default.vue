@@ -1,8 +1,4 @@
 <template>
-  <!-- <div>
-    <NuxtRouteAnnouncer />
-    <NuxtWelcome />
-  </div>/ -->
   <v-app id="inspire" class="bg-background text-main_text">
     <v-navigation-drawer
       expand-on-hover
@@ -30,22 +26,37 @@
             {{ pageInfo.title }}
           </nuxt-link>
         </span>
-        <span class="subTitle">{{ pageInfo.subTitle }}</span>
+        <span class="subTitle"></span>
       </v-app-bar-title>
     </v-app-bar>
     <v-main>
       <NuxtPage />
     </v-main>
+    <v-footer
+      :absolute="true"
+      height="120px"
+    >
+      <v-col
+        class="text-center"
+        cols="12"
+      >
+        &copy; {{ new Date().getFullYear() }} {{ pageInfo.author }}
+      </v-col>
+    </v-footer>
   </v-app>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+import { useDisplay } from 'vuetify'
+import type { PageInfo } from '~/types/pageinfo';
+
 const { mdAndDown } = useDisplay();
 const drawer = ref(false)
 
-const pageInfo = ref({
-  title: "タイトル",
-  subTitle: "サブタイトル"
+const pageInfoData = await useGetPageInfo();
+const pageInfo = useState<PageInfo>('PageInfo',()=>{
+  return pageInfoData as PageInfo
 })
 
 const menuItem = ref(
@@ -66,19 +77,9 @@ const menuItem = ref(
       to: '/categories/'
     },
     {
-      icon: 'mdi-tag-outline',
-      title: 'Tags',
-      to: '/tags/'
-    },
-    {
-      icon: 'mdi-map-marker-check-outline',
-      title: 'PhotoMAP',
-      to: '/photomap/'
-    },
-    {
-      icon: 'mdi-at',
-      title: 'Contact',
-      to: '/contact/'
+      icon: 'mdi-calendar',
+      title: 'Archive',
+      to: '/archive/'
     }
   ]
 )

@@ -2,6 +2,35 @@ import { defineNuxtConfig } from 'nuxt/config'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  app:{
+    head:{
+      titleTemplate: '%s - ' + process.env.SITE_TITLE,
+      title: process.env.SITE_TITLE,
+      htmlAttrs: {
+        lang: 'ja',
+        prefix: 'og: http://ogp.me/ns#'
+      },
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { hid: 'description', name: 'description', content: process.env.META_DESCRIPTION },
+        { hid: 'theme-color', name: 'theme-color', content: '#E8E8EF'},
+  
+        { hid: 'og:site_name', property: 'og:site_name', content: process.env.SITE_TITLE },
+        { hid: 'og:type', property: 'og:type', content: 'website' },
+        { hid: 'og:url', property: 'og:url', content: process.env.META_OG_URL },
+        { hid: 'og:title', property: 'og:title', content: process.env.SITE_TITLE },
+        { hid: 'og:description', property: 'og:description', content: process.env.META_DESCRIPTION },
+        { hid: 'og:image', property: 'og:image', content: process.env.META_OG_IMG },
+        { hid: 'twitter:card', property: 'twitter:card', content: 'summary' },
+      ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'apple-touch-icon', href: '/favicon.ico' }
+      ]
+    },
+  },
+  
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
 
@@ -38,5 +67,19 @@ export default defineNuxtConfig({
       failOnError: false,
     },
   },
+
+  runtimeConfig:{
+    tumblrApiKey : process.env.TUMBLR_API_KEY,
+    public:{
+      tumblrApiKey : process.env.TUMBLR_DEV_API_KEY,
+      tumblrBlogId : process.env.TUMBLR_BLOG_ID,
+      tumblrApiEndpoint : process.env.TUMBLR_API_ENDPOINT,
+      tumblrSubtitle : process.env.PAGE_SUBTITLE,
+      pageLimit : process.env.PAGE_LIMIT, 
+      metaOgUrl: process.env.META_OG_URL,
+      extAbout: process.env.EXT_ABOUT,
+      extArchive: process.env.EXT_ARCHIVE
+    }
+  }
 
 })
