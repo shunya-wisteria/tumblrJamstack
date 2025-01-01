@@ -34,11 +34,15 @@
 
 <script setup lang="ts">
 import type {PageInfo} from "~/types/pageinfo";
+import type { ApiEnv } from "~/types/apienv";
+import { useGetApiEnv } from "~/composables/useTumblrImp";
+
 const config = useRuntimeConfig();
 const pageInfo = ref(useState('PageInfo') as PageInfo);
 const subTitle = ref(config.public.tumblrSubtitle)
 
-const posts = ref(await useGetPosts(1));
+const apiEnv:ApiEnv = useGetApiEnv()
+const posts = ref(await useGetPosts(1, apiEnv));
 
 useHead({
   title:pageInfo.value.title

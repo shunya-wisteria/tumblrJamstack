@@ -2,12 +2,23 @@ import type { PageInfo } from "~/types/pageinfo";
 import type { BlogPost, TumblrInfo, TumblrPosts } from "~/types/tumblrApiType";
 import type { Post } from "~/types/post";
 import { load } from 'cheerio';
+import type { ApiEnv } from "~/types/apienv";
 
-export async function useGetPageInfo() {
+export function useGetApiEnv():ApiEnv{
   const config = useRuntimeConfig();
-  const apiKey:string = config.tumblrApiKey ? config.tumblrApiKey : config.public.tumblrApiKey;
-  const blogId:string = config.public.tumblrBlogId;
-  const url:string = config.public.tumblrApiEndpoint + blogId + "/info?api_key=" + apiKey;
+  const apiEnv:ApiEnv = {
+    apiKey : config.tumblrApiKey ? config.tumblrApiKey : config.public.tumblrApiKey,
+    blogId: config.public.tumblrBlogId,
+    endpoint: config.public.tumblrApiEndpoint,
+    pageLimit: Number(config.public.pageLimit)
+  }
+  return apiEnv;
+}
+
+export async function useGetPageInfo(apiEnv:ApiEnv) {
+  const apiKey:string = apiEnv.apiKey;
+  const blogId:string = apiEnv.blogId;
+  const url:string = apiEnv.endpoint + blogId + "/info?api_key=" + apiKey;
 
   const { data } = await useAsyncData(
     "PageInfo",
@@ -25,14 +36,13 @@ export async function useGetPageInfo() {
   return pageInfo;
 }
 
-export async function useGetPosts(pageNo:number) {
-  const config = useRuntimeConfig();
-  const apiKey:string = config.tumblrApiKey ? config.tumblrApiKey : config.public.tumblrApiKey;
-  const blogId:string = config.public.tumblrBlogId;
-  const pageLimit:number = Number(config.public.pageLimit);
+export async function useGetPosts(pageNo:number, apiEnv:ApiEnv) {
+  const apiKey:string = apiEnv.apiKey;
+  const blogId:string = apiEnv.blogId;
+  const pageLimit:number = apiEnv.pageLimit;
   const offset:number = (pageNo - 1) * pageLimit;
 
-  const url:string = config.public.tumblrApiEndpoint + blogId + "/posts?api_key=" + apiKey + "&limit=" + pageLimit + "&offset=" + offset;
+  const url:string = apiEnv.endpoint + blogId + "/posts?api_key=" + apiKey + "&limit=" + pageLimit + "&offset=" + offset;
   const keyStr = "Posts_" + pageNo.toString();
 
 
@@ -51,12 +61,53 @@ export async function useGetPosts(pageNo:number) {
   return posts;
 }
 
-export async function useGetPostById(id:string) {
-  const config = useRuntimeConfig();
-  const apiKey:string = config.tumblrApiKey ? config.tumblrApiKey : config.public.tumblrApiKey;
-  const blogId:string = config.public.tumblrBlogId;
+export async function useGetPostsByTag(tag:string, pageNo:number, apiEnv:ApiEnv) {
+  const apiKey:string = apiEnv.apiKey;
+  const blogId:string = apiEnv.blogId;
+  const pageLimit:number = apiEnv.pageLimit;
+  const offset:number = (pageNo - 1) * pageLimit;
 
-  const url:string = config.public.tumblrApiEndpoint + blogId + "/posts?api_key=" + apiKey + "&id=" + id;
+  const url:string = apiEnv.endpoint + blogId + "/posts?api_key=" + apiKey + "&limit=" + pageLimit + "&offset=" + offset + "&tag=" + tag;
+  const keyStr = "Posts_" + tag + "_" + pageNo.toString();
+
+  const { data } = await useAsyncData(
+    keyStr,
+    () => $fetch(url, {method:"GET", key:keyStr})
+  )
+  const res:TumblrPosts = data.value as TumblrPosts;
+
+  const posts:Post[] = []
+
+  res.response.posts.forEach(tpost => {
+    const post:Post = mapTpost2Post(tpost);
+    posts.push(post);
+  })
+  return posts;
+}
+
+export async function useGetPostsCountByTag(tag:string, apiEnv:ApiEnv):Promise<number> {
+  const apiKey:string = apiEnv.apiKey;
+  const blogId:string = apiEnv.blogId;
+  const pageLimit:number = apiEnv.pageLimit;
+
+  const url:string = apiEnv.endpoint + blogId + "/posts?api_key=" + apiKey + "&limit=" + pageLimit + "&offset=0&tag=" + tag;
+  const keyStr = "Posts_" + tag + "_0";
+
+
+  const { data } = await useAsyncData(
+    keyStr,
+    () => $fetch(url, {method:"GET", key:keyStr})
+  )
+  const res:TumblrPosts = data.value as TumblrPosts;
+
+  return res.response.total_posts;
+}
+
+export async function useGetPostById(id:string, apiEnv:ApiEnv) {
+  const apiKey:string = apiEnv.apiKey;
+  const blogId:string = apiEnv.blogId;
+
+  const url:string = apiEnv.endpoint + blogId + "/posts?api_key=" + apiKey + "&id=" + id;
   const keyStr = "Post_" + id;
 
   const { data } = await useAsyncData(

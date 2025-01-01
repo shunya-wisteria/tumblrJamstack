@@ -23,6 +23,7 @@ export type BlogPost = { type: string; is_blocks_post_format: boolean; blog_name
 export type ResponsePosts = {
   blog: Blog;
   posts: BlogPost[];
+  total_posts: number;
 }
 
 export type TumblrPosts = {

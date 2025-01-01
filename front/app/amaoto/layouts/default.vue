@@ -49,12 +49,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useDisplay } from 'vuetify'
+import type { ApiEnv } from '~/types/apienv';
 import type { PageInfo } from '~/types/pageinfo';
 
 const { mdAndDown } = useDisplay();
 const drawer = ref(false)
 
-const pageInfoData = await useGetPageInfo();
+const apienv:ApiEnv = useGetApiEnv();
+const pageInfoData = await useGetPageInfo(apienv);
 const pageInfo = useState<PageInfo>('PageInfo',()=>{
   return pageInfoData as PageInfo
 })

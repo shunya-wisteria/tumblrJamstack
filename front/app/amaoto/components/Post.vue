@@ -8,9 +8,14 @@
       </a>
     </blockquote>
 
-    <template v-for="photo in post.photos" v-if="post.type == 'photo'">
-      <img :src="photo">
-    </template>
+    <v-carousel height="100%" show-arrows="hover">
+      <template v-for="photo in post.photos" v-if="post.type == 'photo'">
+        <v-carousel-item
+          :src="photo"
+          cover
+        ></v-carousel-item>
+      </template>
+    </v-carousel>
 
     <div v-html="post.body" style="margin-top:30px; " class="textarea"></div>
 
@@ -24,7 +29,8 @@
           <span style="font-size:80%;" class="textarea"><v-icon style="font-size: 100%; padding-bottom: 1.5px; margin-right: 1px;">mdi-clock-time-four-outline</v-icon>{{ dateFormat(post.date as string) }}</span>
         </v-col>
         <v-col xxl="8" xl="8" lg="8" md="8" sm="8" xs="12" cols="12" align="right" justify="center">
-          <v-chip v-for="(t, index) in (post.tags as any)" :key="index" :to="'/tags/' + t + '/'">
+          <!-- <v-chip v-for="(t, index) in (post.tags as any)" :key="index" :href="tumblrURL + '/tagged/' + t + '/'" target="_blank"> -->
+          <v-chip v-for="(t, index) in (post.tags as any)" :key="index" :to="'/tags/' + t">
             <v-avatar left>
               <v-icon light style="padding-top:3px;">mdi-tag-outline</v-icon>
             </v-avatar>
@@ -44,7 +50,10 @@ interface Props {
   post: Post,
 }
 
-const { post } = defineProps<Props>()
+const { post } = defineProps<Props>();
+const config = useRuntimeConfig();
+const tumblrURL = ref("https://" + config.public.tumblrBlogId)
+
 </script>
 
 <style scoped>

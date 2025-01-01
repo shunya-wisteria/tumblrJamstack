@@ -1,17 +1,18 @@
 <template>
   <template v-if="post">
     <Post :post="(post as Post)"></Post>
-    <!-- <Comment :entryId="data.id" v-if="config.public.comFormEnabled == '1'"/> -->
   </template>
 </template>
 
 <script setup lang="ts">
+import type { ApiEnv } from '~/types/apienv';
 import type { Post } from '~/types/post';
 import type { PageInfo } from "~~/types/pageinfo";
 
 const route = useRoute();
 const id = ref(route.params.id.toString());
-const post = ref(await useGetPostById(id.value) as Post);
+const apiEnv:ApiEnv = useGetApiEnv();
+const post = ref(await useGetPostById(id.value, apiEnv) as Post);
 
 const pageInfo = useState('PageInfo').value as PageInfo;
 const pageTitle = pageInfo.title;

@@ -1,4 +1,6 @@
 import { defineNuxtConfig } from 'nuxt/config'
+import { useGetPostCountSv, useGetPostsRoute, useGetPostsIndexRoute } from './composables/useTumblrImpSv'
+import type { ApiEnv } from './types/apienv'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -29,6 +31,26 @@ export default defineNuxtConfig({
         { rel: 'apple-touch-icon', href: '/favicon.ico' }
       ]
     },
+  },
+
+  hooks: {
+    async 'nitro:config'(nitroConfig){
+      const apiEnv:ApiEnv = {
+        apiKey: process.env.TUMBLR_API_KEY ? process.env.TUMBLR_API_KEY : "",
+        blogId: process.env.TUMBLR_BLOG_ID ? process.env.TUMBLR_BLOG_ID : "",
+        endpoint: process.env.TUMBLR_API_ENDPOINT ? process.env.TUMBLR_API_ENDPOINT : "",
+        pageLimit: process.env.PAGE_LIMIT ? Number(process.env.PAGE_LIMIT) : 0
+      }
+
+      // Post総件数
+      const totalCount = await useGetPostCountSv(apiEnv);
+      // Postルート
+      const ids = await useGetPostsRoute(apiEnv, totalCount);
+      nitroConfig.prerender?.routes?.push(...ids);
+      // Post一覧ルート
+      const pages = await useGetPostsIndexRoute(totalCount, apiEnv.pageLimit);
+      nitroConfig.prerender?.routes?.push(...pages);
+    }
   },
   
   compatibilityDate: '2024-11-01',
