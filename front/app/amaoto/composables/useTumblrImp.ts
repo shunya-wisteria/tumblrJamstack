@@ -130,7 +130,7 @@ function mapTpost2Post(tpost:BlogPost):Post
     id: tpost.id_string,
     slug: tpost.slug,
     post_url: tpost.post_url,
-    date: tpost.date,
+    date: tpost.date.replace(" ", "T").replace(" GMT", "Z"),
     timestamp: tpost.timestamp,
     tags: tpost.tags,
     summary: tpost.summary,
