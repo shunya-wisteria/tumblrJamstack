@@ -44,9 +44,10 @@ export default defineNuxtConfig({
 
       // Post総件数
       const totalCount = await useGetPostCountSv(apiEnv);
-      // Postルート
+      // Post/tagルート
       const ids = await useGetPostsRoute(apiEnv, totalCount);
       nitroConfig.prerender?.routes?.push(...ids);
+
       // Post一覧ルート
       const pages = await useGetPostsIndexRoute(totalCount, apiEnv.pageLimit);
       nitroConfig.prerender?.routes?.push(...pages);
@@ -90,6 +91,11 @@ export default defineNuxtConfig({
     },
   },
 
+  site:{
+    url: process.env.HOST_NAME,
+    trailingSlash: true
+  },
+
   runtimeConfig:{
     tumblrApiKey : process.env.TUMBLR_API_KEY,
     public:{
@@ -100,7 +106,8 @@ export default defineNuxtConfig({
       pageLimit : process.env.PAGE_LIMIT, 
       metaOgUrl: process.env.META_OG_URL,
       extAbout: process.env.EXT_ABOUT,
-      extArchive: process.env.EXT_ARCHIVE
+      extArchive: process.env.EXT_ARCHIVE,
+      extCategories: process.env.EXT_CATEGORIES
     }
   }
 

@@ -33,6 +33,7 @@ export async function useGetPostsRoute(apiEnv:ApiEnv, inTotalCount:number|null):
   const maxPage = Math.ceil(totalCount / pageLimit);
   
   const ids:string[] = [];
+  const tags:string[] = [];
   // ページ数分繰り返し
   for(let i = 0; i < maxPage; i++)
   {
@@ -50,10 +51,23 @@ export async function useGetPostsRoute(apiEnv:ApiEnv, inTotalCount:number|null):
     // id一覧作成
     posts.forEach(post => {
       ids.push(post.id_string);
+      post.tags.forEach(tag => {
+        tags.push(tag);
+      })
     });
   }
+  // postルート
+  const postRoutes = ids.map((id:string) => `/post/${id}`);
+  return postRoutes;
 
-  return ids.map((id:string) => `/post/${id}`);
+  //-- タグページのルーティング、ページ数が多すぎてAPI制限に引っかかるため使用しない
+  // // タグ重複カット
+  // const outTags = Array.from(new Set(tags));
+  // const tagRoutesBase = await useGetTagsIndexRoute(apiEnv, outTags);
+  // // タグルート
+  // const tagRoutes = tagRoutesBase.map((obj:{tag:string, page:number}) => `/tags/${obj.tag}/${obj.page}`)
+
+  // return postRoutes.concat(tagRoutes);
 }
 
 // POSTSルート作成
@@ -69,4 +83,39 @@ export async function useGetPostsIndexRoute(totalCount:number, pageLimit:number)
   }
 
   return pagess.map((page:string) => `/posts/${page}`);
+}
+
+// Tagsルート作成
+export async function useGetTagsIndexRoute(apiEnv:ApiEnv, tags:string[]):Promise<{tag:string, page:number}[]> {
+  const tagRoute:{tag:string, page:number}[] = []
+  
+  for(let i = 0; i < tags.length; i++)
+  {
+    console.log("tags:" + i + "/" + tags.length);
+    const totalCount = await useGetPostsCountByTagSv(tags[i], apiEnv);
+    for(let j = 0; j < totalCount; j++)
+    {
+      tagRoute.push({tag:tags[i], page:j+1})
+    }
+  }
+  return tagRoute;
+}
+
+export async function useGetPostsCountByTagSv(tag:string, apiEnv:ApiEnv):Promise<number> {
+  const apiKey:string = apiEnv.apiKey;
+  const blogId:string = apiEnv.blogId;
+  const pageLimit:number = apiEnv.pageLimit;
+
+  const url:string = apiEnv.endpoint + blogId + "/posts?api_key=" + apiKey + "&limit=" + pageLimit + "&offset=0&tag=" + tag;
+
+  // API call
+  const res = await fetch(
+    url,
+    {
+      method: "GET"
+    }
+  );
+  const totalCount = (await res.json() as TumblrPosts).response.total_posts;
+
+  return totalCount;
 }
