@@ -23,7 +23,7 @@
       <v-app-bar-title>
         <span class="headline">
           <nuxt-link to="/" style="color:inherit;border-bottom:none;">
-            {{ pageInfo.title }}
+            {{ title }}
           </nuxt-link>
         </span>
         <span class="subTitle"></span>
@@ -60,6 +60,8 @@ const pageInfoData = await useGetPageInfo(apienv);
 const pageInfo = useState<PageInfo>('PageInfo',()=>{
   return pageInfoData as PageInfo
 })
+const config = useRuntimeConfig();
+const title = ref(config.public.siteTitle);
 
 const menuItem = ref(
   [

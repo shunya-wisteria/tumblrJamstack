@@ -39,13 +39,14 @@ import { useGetApiEnv } from "~/composables/useTumblrImp";
 
 const config = useRuntimeConfig();
 const pageInfo = ref(useState('PageInfo') as PageInfo);
-const subTitle = ref(config.public.tumblrSubtitle)
+const siteTitle = ref(config.public.siteTitle);
+const subTitle = ref(config.public.tumblrSubtitle);
 
 const apiEnv:ApiEnv = useGetApiEnv()
 const posts = ref(await useGetPosts(1, apiEnv));
 
 useHead({
-  title:pageInfo.value.title
+  title:pageInfo.value.siteTitle
 });
 
 </script>
