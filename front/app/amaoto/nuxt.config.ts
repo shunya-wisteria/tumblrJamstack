@@ -103,6 +103,7 @@ export default defineNuxtConfig({
       tumblrBlogId : process.env.TUMBLR_BLOG_ID,
       tumblrApiEndpoint : process.env.TUMBLR_API_ENDPOINT,
       tumblrSubtitle : process.env.PAGE_SUBTITLE,
+      siteTitle: process.env.SITE_TITLE,
       pageLimit : process.env.PAGE_LIMIT, 
       metaOgUrl: process.env.META_OG_URL,
       extAbout: process.env.EXT_ABOUT,
