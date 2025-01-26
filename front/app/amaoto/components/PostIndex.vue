@@ -2,7 +2,7 @@
   <v-container class="main-cnt">
     <v-row align="center" justify="start">
       <v-col v-for="post in posts" xl="4" lg="4" md="6"  cols="12" sm="12" xs="12">
-        <nuxt-link :to="'/post/' + post.id?.toString() + '/'">
+        <nuxt-link :to="'/post/' + post.id?.toString()">
           <v-hover
             v-slot="{ isHovering, props }"
             open-delay="80"
