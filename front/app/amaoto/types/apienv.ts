@@ -3,4 +3,5 @@ export type ApiEnv = {
   blogId: string;
   endpoint: string;
   pageLimit: number;
+  apiSleep: number;
 }

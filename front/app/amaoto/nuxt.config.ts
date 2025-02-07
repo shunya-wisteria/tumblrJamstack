@@ -39,7 +39,8 @@ export default defineNuxtConfig({
         apiKey: process.env.TUMBLR_API_KEY ? process.env.TUMBLR_API_KEY : "",
         blogId: process.env.TUMBLR_BLOG_ID ? process.env.TUMBLR_BLOG_ID : "",
         endpoint: process.env.TUMBLR_API_ENDPOINT ? process.env.TUMBLR_API_ENDPOINT : "",
-        pageLimit: process.env.PAGE_LIMIT ? Number(process.env.PAGE_LIMIT) : 0
+        pageLimit: process.env.PAGE_LIMIT ? Number(process.env.PAGE_LIMIT) : 0,
+        apiSleep: process.env.API_SLEEP ? Number(process.env.API_SLEEP) : 0 
       }
 
       // Post総件数
@@ -108,7 +109,8 @@ export default defineNuxtConfig({
       metaOgUrl: process.env.META_OG_URL,
       extAbout: process.env.EXT_ABOUT,
       extArchive: process.env.EXT_ARCHIVE,
-      extCategories: process.env.EXT_CATEGORIES
+      extCategories: process.env.EXT_CATEGORIES,
+      apiSleep: process.env.API_SLEEP
     }
   }
 
