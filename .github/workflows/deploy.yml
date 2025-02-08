@@ -47,7 +47,7 @@ jobs:
 
 
     - name: Deploy to Netlify
-      run: npx netlify-cli deploy --dir=dist --prod
+      run: npx netlify-cli deploy --dir=.output/public --prod
       working-directory: front/app/amaoto
       env:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
