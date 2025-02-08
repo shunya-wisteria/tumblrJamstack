@@ -25,6 +25,13 @@ jobs:
       run: npm install
       working-directory: front/app/amaoto
 
+    - name: Check environment variables
+      run: echo $TUMBLR_API_KEY
+      env:
+        TUMBLR_API_KEY: ${{ secrets.TUMBLR_API_KEY }}
+      working-directory: front/app/amaoto
+
+
     - name: Build project
       run: npm run generate
       working-directory: front/app/amaoto
