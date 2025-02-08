@@ -4,8 +4,6 @@ import type { Post } from "~/types/post";
 import { load } from 'cheerio';
 import type { ApiEnv } from "~/types/apienv";
 
-const sleep = (time:any) => new Promise((r) => setTimeout(r, time));
-
 export function useGetApiEnv():ApiEnv{
   const config = useRuntimeConfig();
   const apiEnv:ApiEnv = {
@@ -112,12 +110,6 @@ export async function useGetPostById(id:string, apiEnv:ApiEnv) {
 
   const url:string = apiEnv.endpoint + blogId + "/posts?api_key=" + apiKey + "&id=" + id;
   const keyStr = "Post_" + id;
-
-  // API実行間隔制御
-  if(import.meta.server)
-  {
-    await sleep(process.env.API_SLEEP);
-  }
   
   const { data } = await useAsyncData(
     keyStr,
