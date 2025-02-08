@@ -5,6 +5,21 @@ on:
     branches:
       - main
 
+env:
+  TUMBLR_API_KEY: ${{ secrets.TUMBLR_API_KEY }}
+  TUMBLR_BLOG_ID: ${{ secrets.TUMBLR_BLOG_ID }}
+  TUMBLR_API_ENDPOINT: ${{ secrets.TUMBLR_API_ENDPOINT }}
+  PAGE_SUBTITLE: ${{ secrets.PAGE_SUBTITLE }}
+  PAGE_LIMIT: ${{ secrets.PAGE_LIMIT }}
+  EXT_ABOUT: ${{ secrets.EXT_ABOUT }}
+  EXT_ARCHIVE: ${{ secrets.EXT_ARCHIVE }}
+  EXT_CATEGORIES: ${{ secrets.EXT_CATEGORIES }}
+  SITE_TITLE: ${{ secrets.SITE_TITLE }}
+  META_OG_URL: ${{ secrets.META_OG_URL }}
+  META_DESCRIPTION: ${{ secrets.META_DESCRIPTION }}
+  META_OG_IMG: ${{ secrets.META_OG_IMG }}
+  HOST_NAME: ${{ secrets.HOST_NAME }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,30 +40,9 @@ jobs:
       run: npm install
       working-directory: front/app/amaoto
 
-    - name: Check environment variables
-      run: echo $TUMBLR_API_KEY
-      env:
-        TUMBLR_API_KEY: ${{ secrets.TUMBLR_API_KEY }}
-      working-directory: front/app/amaoto
-
-
     - name: Build project
       run: npm run generate
       working-directory: front/app/amaoto
-      env:
-        TUMBLR_API_KEY: ${{ secrets.TUMBLR_API_KEY }}
-        TUMBLR_BLOG_ID: ${{ secrets.TUMBLR_BLOG_ID }}
-        TUMBLR_API_ENDPOINT: ${{ secrets.TUMBLR_API_ENDPOINT }}
-        PAGE_SUBTITLE: ${{ secrets.PAGE_SUBTITLE }}
-        PAGE_LIMIT: ${{ secrets.PAGE_LIMIT }}
-        EXT_ABOUT: ${{ secrets.EXT_ABOUT }}
-        EXT_ARCHIVE: ${{ secrets.EXT_ARCHIVE }}
-        EXT_CATEGORIES: ${{ secrets.EXT_CATEGORIES }}
-        SITE_TITLE: ${{ secrets.SITE_TITLE }}
-        META_OG_URL: ${{ secrets.META_OG_URL }}
-        META_DESCRIPTION: ${{ secrets.META_DESCRIPTION }}
-        META_OG_IMG: ${{ secrets.META_OG_IMG }}
-        HOST_NAME: ${{ secrets.HOST_NAME }}
 
 
     - name: Deploy to Netlify
