@@ -1,0 +1,36 @@
+name: Build and Deploy to Netlify
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '22.12.0'
+
+    - name: Change directory to amaoto
+      run: cd front/app/amaoto
+
+    - name: Install dependencies
+      run: npm install
+      working-directory: front/app/amaoto
+
+    - name: Build project
+      run: npm run build
+      working-directory: front/app/amaoto
+
+    - name: Deploy to Netlify
+      run: npx netlify-cli deploy --dir=dist --prod
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
