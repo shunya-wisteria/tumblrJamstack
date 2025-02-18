@@ -57,7 +57,7 @@ export async function useGetPostsRoute(apiEnv:ApiEnv, inTotalCount:number|null):
     });
   }
   // postルート
-  const postRoutes = ids.map((id:string) => `/post/${id}`);
+  const postRoutes = ids.map((id:string) => `/post/${id}/`);
   return postRoutes;
 
   //-- タグページのルーティング、ページ数が多すぎてAPI制限に引っかかるため使用しない
@@ -82,7 +82,7 @@ export async function useGetPostsIndexRoute(totalCount:number, pageLimit:number)
     pagess.push((i+1).toString());
   }
 
-  return pagess.map((page:string) => `/posts/${page}`);
+  return pagess.map((page:string) => `/posts/${page}/`);
 }
 
 // Tagsルート作成
