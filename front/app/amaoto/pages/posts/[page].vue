@@ -23,7 +23,7 @@ const posts = ref(await useGetPosts(page.value, apiEnv));
 const OnPaging = () => {
   const router = useRouter();
   router.push({
-    path : "/posts/" + page.value,
+    path : "/posts/" + page.value + "/",
   })
 }
 

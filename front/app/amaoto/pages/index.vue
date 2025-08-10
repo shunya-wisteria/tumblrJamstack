@@ -23,7 +23,7 @@
         <v-row align="center" justigy="center">
           <v-col cols=12 align="center" style="margin-top:20px;">
             <p>
-              <nuxt-link to="/posts/2" class="more" style="font-size:120%;">Read More Posts</nuxt-link>
+              <nuxt-link to="/posts/2/" class="more" style="font-size:120%;">Read More Posts</nuxt-link>
             </p>
           </v-col>
         </v-row>
@@ -46,7 +46,7 @@ const apiEnv:ApiEnv = useGetApiEnv()
 const posts = ref(await useGetPosts(1, apiEnv));
 
 useHead({
-  title:pageInfo.value.siteTitle
+  title:siteTitle
 });
 
 </script>
