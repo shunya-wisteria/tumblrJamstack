@@ -17,7 +17,7 @@ export default defineVuetifyConfiguration({
           success: '#4CAF50',
           warning: '#FFC107',
 
-          page_title:'rgba(0, 0, 0, 0.87)',
+          page_title:'#333333',
           menu_text:'rgba(0, 0, 0, 0.87)',
           background:'#F9F9F9',
           main_text: '#737373',
@@ -31,7 +31,10 @@ export default defineVuetifyConfiguration({
           footer_bg: '#F5F5F5',
           footer_text: '#555555',
           comment_bg: '#f5f5f5',
-          comment_border: '#ececec'
+          comment_border: '#ececec',
+          menu_bg: '#E8E8E8',
+          menu_bg_ho: '#EEEEEE',
+          appbar_bg:'#f1f1f1'
         },
       },
       dark: {
@@ -58,7 +61,9 @@ export default defineVuetifyConfiguration({
           footer_bg: '#212121',
           footer_text: '#FFFFFF',
           comment_bg: '#252525',
-          comment_border: '#303030'
+          comment_border: '#303030',
+          menu_bg: '#E8E8E8',
+          menu_bg_ho: '#EEEEEE'
         },
       }
     }

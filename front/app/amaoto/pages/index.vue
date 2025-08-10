@@ -63,35 +63,6 @@ useHead({
   border-radius: 3px;
 }
 
-.secCaption {
-  color: rgb(var(--v-theme-post_title));
-  font-size: 24px;
-  font-weight: 400;
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  margin-top: 15px
-}
-
-.secCaption:after,
-.secCaption:before {
-  content: "";
-  flex-grow: 1;
-  height: 1px;
-  background: #444;
-  display: block
-}
-
-.secCaption:before {
-  margin-right: .8em;
-  background: linear-gradient(-90deg, #888, transparent)
-}
-
-.secCaption:after {
-  margin-left: .8em;
-  background: linear-gradient(90deg, #888, transparent)
-}
-
 .topLink {
   margin-top: 20px;
   margin-bottom: 20px;
@@ -123,4 +94,5 @@ useHead({
 .topLinkColLeft {
   padding-right: 2.5px;
 }
+
 </style>

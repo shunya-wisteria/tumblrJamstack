@@ -167,3 +167,52 @@ h3{
 .iframely-embed{
   margin:20px 0px;
 }
+
+.secCaption {
+  color: rgb(var(--v-theme-post_title));
+  font-size: 24px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  margin-top: 15px
+}
+
+.secCaption:after,
+.secCaption:before {
+  content: "";
+  flex-grow: 1;
+  height: 1px;
+  background: #444;
+  display: block
+}
+
+.secCaption:before {
+  margin-right: .8em;
+  background: linear-gradient(-90deg, #888, transparent)
+}
+
+.secCaption:after {
+  margin-left: .8em;
+  background: linear-gradient(90deg, #888, transparent)
+}
+
+
+.menuText {
+  display: block;
+  width: 100%;
+  background: rgb(var(--v-theme-menu_bg));
+  color: #444;
+  border-radius: 8px;
+  padding: 14px 0;
+  margin: 6px 0;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 1px 4px #0001;
+  transition: background 0.2s, color 0.2s;
+}
+
+.menuText:hover {
+  background: rgb(var(--v-theme-menu_bg_ho));
+  color: #222;
+}

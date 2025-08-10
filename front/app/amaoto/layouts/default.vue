@@ -1,25 +1,6 @@
 <template>
   <v-app id="inspire" class="bg-background text-main_text">
-    <v-navigation-drawer
-      expand-on-hover
-      :rail="!mdAndDown"
-      v-model="drawer"
-    >
-    <v-list>
-        <v-list-item
-          v-for="(item, i) in menuItem"
-          :key="i"
-          :to="item.to"
-        >
-          <template v-slot:prepend>
-            <v-icon :icon="item.icon" style="color:rgb(var(--v-theme-menu_text));" />
-          </template>
-          <v-list-item-title v-text="item.title" style="color:rgb(var(--v-theme-menu_text));"></v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-app-bar>
-      <v-app-bar-nav-icon @click="drawer = !drawer" v-if="mdAndDown"></v-app-bar-nav-icon>
+    <v-app-bar style="background-color:rgb(var(--v-theme-appbar_bg));">
       <v-app-bar-title>
         <span class="headline">
           <nuxt-link to="/" style="color:inherit;border-bottom:none;">
@@ -31,6 +12,22 @@
     </v-app-bar>
     <v-main>
       <NuxtPage />
+
+      <v-layout column justify="center" align="center">
+        <v-container>
+          <v-row align="center" justigy="center">
+            <v-col cols=12>
+              <p class="text-uppercase secCaption">Menu</p>
+            </v-col>
+            <v-col cols="4" v-for="(item, index) in menuItem">
+              <nuxt-link :to=item.to class="menuText" style="font-size:100%;">
+              {{item.title}}
+              </nuxt-link>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-layout>
+
     </v-main>
     <v-footer
       :absolute="true"
@@ -66,11 +63,6 @@ const title = ref(config.public.siteTitle);
 const menuItem = ref(
   [
     {
-      icon: 'mdi-home-outline',
-      title: 'Home',
-      to: '/'
-    },
-    {
       icon: 'mdi-account-details-outline',
       title: 'About',
       to: '/about/'
@@ -96,6 +88,7 @@ const menuItem = ref(
   font-size: 1.5rem!important;
   font-weight: 400;
   letter-spacing: normal!important;
+  margin-left:10px;
 }
 .subTitle
 {
