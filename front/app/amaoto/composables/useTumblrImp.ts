@@ -46,7 +46,25 @@ export async function useGetPosts(pageNo:number, apiEnv:ApiEnv) {
   const url:string = apiEnv.endpoint + blogId + "/posts?api_key=" + apiKey + "&limit=" + pageLimit + "&offset=" + offset;
   const keyStr = "Posts_" + pageNo.toString();
 
+  let cache: Record<string, any[]> = {}
+  try {
+    const imported = await import('~/tumblr-cache.json')
+    cache = imported.default as Record<string, any[]>
+  } catch {
+    // ローカル開発時はキャッシュなし、useGetPostsにフォールバック
+  }
+  // キャッシュhit時
+  const cacheKey = `/posts/${pageNo}/`
+  if(cache[cacheKey]) {
+    const posts:Post[] = [];
+    (cache[cacheKey] as BlogPost[]).forEach(tpost => {
+      const post:Post = mapTpost2Post(tpost);
+      posts.push(post);
+    })
+    return posts;
+  }
   
+  //  キャッシュがhitしない場合はAPI call
   const { data } = await useAsyncData(
     keyStr,
     () => $fetch(url, {method:"GET", key:keyStr})

@@ -19,6 +19,21 @@ const maxPage = ref(Math.ceil(totalCount / pageLimit));
 
 const posts = ref(await useGetPosts(page.value, apiEnv));
 
+
+// let cache: Record<string, any[]> = {}
+// try {
+//   const imported = await import('~/tumblr-cache.json')
+//   cache = imported.default as Record<string, any[]>
+// } catch {
+//   // ローカル開発時はキャッシュなし、useGetPostsにフォールバック
+// }
+
+// // キャッシュヒットすればAPI呼び出しなし、なければAPI call
+// const cacheKey = `/posts/${page.value}/`
+// const posts = ref(
+//   cache[cacheKey] ?? await useGetPosts(page.value, apiEnv)
+// )
+
 // Pagination EventHandler 
 const OnPaging = () => {
   const router = useRouter();
