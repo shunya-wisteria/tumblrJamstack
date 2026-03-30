@@ -40,6 +40,9 @@ export async function useGetPostsRoute(apiEnv:ApiEnv, inTotalCount:number|null):
     const offset = pageLimit * i;
     const url = apiEnv.endpoint + blogId + "/posts?api_key=" + apiKey + "&limit=" + pageLimit + "&offset=" + offset;
 
+    // API連続call抑止
+    await new Promise(res => setTimeout(res, 1000));
+
     // API call
     const res = await fetch(
       url,
@@ -84,6 +87,38 @@ export async function useGetPostsIndexRoute(totalCount:number, pageLimit:number)
 
   return pagess.map((page:string) => `/posts/${page}/`);
 }
+
+export async function useCrawlAllPages(apiEnv: ApiEnv) {
+  const cache: Record<string, any[]> = {}
+  const routes: string[] = []
+  let page = 1
+  let nextUrl: string | null =
+    `${apiEnv.endpoint}${apiEnv.blogId}/posts?api_key=${apiEnv.apiKey}&limit=${apiEnv.pageLimit}`
+
+  while (nextUrl) {
+    const res:any = await fetch(nextUrl)
+    if (!res.ok) {
+      throw new Error(`Tumblr API error: ${res.status} at page ${page}`)
+    }
+    const json = await res.json()
+
+    routes.push(`/posts/${page}/`)
+    cache[`/posts/${page}/`] = json.response.posts
+
+    const nextHref = json.response._links?.next?.href
+    if (nextHref) {
+      const nextUrlObj = new URL(`https://api.tumblr.com${nextHref}`)
+      nextUrlObj.searchParams.set('api_key', apiEnv.apiKey)
+      nextUrl = nextUrlObj.toString()
+    } else {
+      nextUrl = null
+    }
+
+    page++
+  }
+  return { routes, cache }
+}
+
 
 // Tagsルート作成
 export async function useGetTagsIndexRoute(apiEnv:ApiEnv, tags:string[]):Promise<{tag:string, page:number}[]> {

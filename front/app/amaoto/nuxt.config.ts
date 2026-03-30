@@ -1,6 +1,7 @@
 import { defineNuxtConfig } from 'nuxt/config'
-import { useGetPostCountSv, useGetPostsRoute, useGetPostsIndexRoute } from './composables/useTumblrImpSv'
+import { useGetPostCountSv, useGetPostsRoute, useCrawlAllPages } from './composables/useTumblrImpSv'
 import type { ApiEnv } from './types/apienv'
+import { writeFileSync } from 'fs'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -50,8 +51,10 @@ export default defineNuxtConfig({
       nitroConfig.prerender?.routes?.push(...ids);
 
       // Post一覧ルート
-      const pages = await useGetPostsIndexRoute(totalCount, apiEnv.pageLimit);
-      nitroConfig.prerender?.routes?.push(...pages);
+      const { routes, cache } = await useCrawlAllPages(apiEnv);
+      nitroConfig.prerender?.routes?.push(...routes);
+
+      writeFileSync('./tumblr-cache.json', JSON.stringify(cache));
     }
   },
   
