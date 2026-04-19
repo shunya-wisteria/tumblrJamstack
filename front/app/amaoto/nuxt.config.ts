@@ -92,6 +92,8 @@ export default defineNuxtConfig({
   nitro: {
     prerender: {
       failOnError: false,
+      concurrency: 3, // 並列数を1に制限
+      interval: 100,  // リクエスト間隔(ms)
     },
   },
 
