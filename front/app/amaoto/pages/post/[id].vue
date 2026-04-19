@@ -12,7 +12,12 @@ import type { PageInfo } from "~~/types/pageinfo";
 const route = useRoute();
 const id = ref(route.params.id.toString());
 const apiEnv:ApiEnv = useGetApiEnv();
-const post = ref(await useGetPostById(id.value, apiEnv) as Post);
+
+const postData = await useGetPostById(id.value, apiEnv);
+if (!postData) {
+  throw createError({ statusCode: 404, statusMessage: 'Post not found' })
+}
+const post = ref(postData as Post);
 
 const pageInfo = useState('PageInfo').value as PageInfo;
 const config = useRuntimeConfig();
