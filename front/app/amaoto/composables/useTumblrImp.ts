@@ -128,7 +128,7 @@ export async function useGetPostById(id:string, apiEnv:ApiEnv) {
     catch(e){
      console.error(`!!--mapTpost2Post error for ${cacheKey}:`, e)
     }
-    
+    return undefined;
   }
 
   const apiKey:string = apiEnv.apiKey;
