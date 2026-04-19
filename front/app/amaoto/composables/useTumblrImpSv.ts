@@ -115,7 +115,13 @@ export async function useCrawlAllPages(apiEnv: ApiEnv) {
     const json = await res.json()
 
     routes.push(`/posts/${page}/`)
+    // キャッシュにページ全体を保存
     cache[`/posts/${page}/`] = json.response.posts
+
+    // キャッシュに個別のPOSTも保存
+    json.response.posts.forEach((post: any) => {
+      cache[`/post/${post.id_string}/`] = post
+    })
 
     const nextHref = json.response._links?.next?.href
     if (nextHref) {
