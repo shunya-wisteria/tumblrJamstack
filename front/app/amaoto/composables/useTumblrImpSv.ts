@@ -98,7 +98,7 @@ export async function useCrawlAllPages(apiEnv: ApiEnv) {
     `${apiEnv.endpoint}${apiEnv.blogId}/posts?api_key=${apiEnv.apiKey}&limit=${apiEnv.pageLimit}`
 
   while (nextUrl) {
-    await sleep(1000) // API連続call抑止
+    await sleep(500) // API連続call抑止
 
     const res:any = await fetch(nextUrl)
 
