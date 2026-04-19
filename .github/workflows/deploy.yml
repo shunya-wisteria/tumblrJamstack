@@ -45,6 +45,12 @@ jobs:
       run: npm run generate
       working-directory: front/app/amaoto
 
+    - name: Upload cache artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: tumblr-cache
+        path: front/app/amaoto/tumblr-cache.json
+        retention-days: 3  # 3日後に自動削除
 
     - name: Deploy to Netlify
       run: npx netlify-cli deploy --dir=.output/public --prod
