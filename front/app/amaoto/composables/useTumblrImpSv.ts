@@ -1,6 +1,8 @@
 import type { ApiEnv } from "~/types/apienv";
 import type { BlogPost, TumblrInfo, TumblrPosts } from "~/types/tumblrApiType";
 
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
 // POST全件数取得
 export async function useGetPostCountSv(apiEnv:ApiEnv):Promise<number>
 {
@@ -96,14 +98,30 @@ export async function useCrawlAllPages(apiEnv: ApiEnv) {
     `${apiEnv.endpoint}${apiEnv.blogId}/posts?api_key=${apiEnv.apiKey}&limit=${apiEnv.pageLimit}`
 
   while (nextUrl) {
+    await sleep(1000) // API連続call抑止
+
     const res:any = await fetch(nextUrl)
+
+    if (res.status === 429) {
+      // API rate limit hit, wait and retry
+      console.warn(`Rate limited at page ${page}, waiting 10s...`)
+      await sleep(10000)
+      continue
+    }
+
     if (!res.ok) {
       throw new Error(`Tumblr API error: ${res.status} at page ${page}`)
     }
     const json = await res.json()
 
     routes.push(`/posts/${page}/`)
+    // キャッシュにページ全体を保存
     cache[`/posts/${page}/`] = json.response.posts
+
+    // キャッシュに個別のPOSTも保存
+    json.response.posts.forEach((post: any) => {
+      cache[`/post/${post.id_string}/`] = post
+    })
 
     const nextHref = json.response._links?.next?.href
     if (nextHref) {

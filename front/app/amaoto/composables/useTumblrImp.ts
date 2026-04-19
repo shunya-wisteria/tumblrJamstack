@@ -52,6 +52,7 @@ export async function useGetPosts(pageNo:number, apiEnv:ApiEnv) {
     cache = imported.default as Record<string, any[]>
   } catch {
     // ローカル開発時はキャッシュなし、useGetPostsにフォールバック
+    console.warn("!!---tumblr-cache.json not found, falling back to useGetPosts--!!")
   }
   // キャッシュhit時
   const cacheKey = `/posts/${pageNo}/`
@@ -123,6 +124,22 @@ export async function useGetPostsCountByTag(tag:string, apiEnv:ApiEnv):Promise<n
 }
 
 export async function useGetPostById(id:string, apiEnv:ApiEnv) {
+  // キャッシュから引く
+  let cache: Record<string, any> = {}
+  try {
+    const imported = await import('~/tumblr-cache.json')
+    cache = imported.default as Record<string, any>
+  } catch {
+    // キャッシュがない場合はそのまま
+    console.warn("!!---tumblr-cache.json not found, falling back to useGetPostById--!!")
+  }
+
+  const cacheKey = `/post/${id}/`
+  if (cache[cacheKey]) {
+    return mapTpost2Post(cache[cacheKey])
+  }
+
+  console.warn("!!--cache miss: " + cacheKey + ", calling API...--!!");
   const apiKey:string = apiEnv.apiKey;
   const blogId:string = apiEnv.blogId;
 
