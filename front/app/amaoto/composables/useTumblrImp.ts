@@ -122,7 +122,13 @@ export async function useGetPostById(id:string, apiEnv:ApiEnv) {
   const cache = await useGetTumblrCache();
   const cacheKey = `/post/${id}/`
   if (cache[cacheKey]) {
-    return mapTpost2Post(cache[cacheKey])
+    try{
+      return mapTpost2Post(cache[cacheKey])
+    }
+    catch(e){
+     console.error(`!!--mapTpost2Post error for ${cacheKey}:`, e)
+    }
+    
   }
 
   const apiKey:string = apiEnv.apiKey;
