@@ -44,15 +44,16 @@ export default defineNuxtConfig({
         apiSleep: process.env.API_SLEEP ? Number(process.env.API_SLEEP) : 0 
       }
 
-      // Post総件数
-      const totalCount = await useGetPostCountSv(apiEnv);
-      // Post/tagルート
-      const ids = await useGetPostsRoute(apiEnv, totalCount);
-      nitroConfig.prerender?.routes?.push(...ids);
+      // // Post総件数
+      // const totalCount = await useGetPostCountSv(apiEnv);
+      // // Post/tagルート
+      // const ids = await useGetPostsRoute(apiEnv, totalCount);
+      // nitroConfig.prerender?.routes?.push(...ids);
 
       // Post一覧ルート
-      const { routes, cache } = await useCrawlAllPages(apiEnv);
+      const { routes, cache, postRoutes } = await useCrawlAllPages(apiEnv);
       nitroConfig.prerender?.routes?.push(...routes);
+      nitroConfig.prerender?.routes?.push(...postRoutes);
 
       writeFileSync('./tumblr-cache.json', JSON.stringify(cache));
     }

@@ -93,6 +93,8 @@ export async function useGetPostsIndexRoute(totalCount:number, pageLimit:number)
 export async function useCrawlAllPages(apiEnv: ApiEnv) {
   const cache: Record<string, any[]> = {}
   const routes: string[] = []
+  const postRoutes: string[] = []
+
   let page = 1
   let nextUrl: string | null =
     `${apiEnv.endpoint}${apiEnv.blogId}/posts?api_key=${apiEnv.apiKey}&limit=${apiEnv.pageLimit}`
@@ -121,6 +123,7 @@ export async function useCrawlAllPages(apiEnv: ApiEnv) {
     // キャッシュに個別のPOSTも保存
     json.response.posts.forEach((post: any) => {
       cache[`/post/${post.id_string}/`] = post
+      postRoutes.push(`/post/${post.id_string}/`)
     })
 
     const nextHref = json.response._links?.next?.href
@@ -134,7 +137,7 @@ export async function useCrawlAllPages(apiEnv: ApiEnv) {
 
     page++
   }
-  return { routes, cache }
+  return { routes, cache, postRoutes }
 }
 
 
