@@ -19,7 +19,7 @@ export async function useGetPostsIndexRoute(totalCount:number, pageLimit:number)
 }
 
 export async function useCrawlAllPages(apiEnv: ApiEnv) {
-  const cache: Record<string, any[]> = {}
+  const cache: Record<string, any> = {}
   const routes: string[] = []
   const postRoutes: string[] = []
 
