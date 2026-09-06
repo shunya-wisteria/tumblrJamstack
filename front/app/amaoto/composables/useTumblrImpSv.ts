@@ -3,78 +3,6 @@ import type { BlogPost, TumblrInfo, TumblrPosts } from "~/types/tumblrApiType";
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
-// POST全件数取得
-export async function useGetPostCountSv(apiEnv:ApiEnv):Promise<number>
-{
-  const apiKey:string = apiEnv.apiKey;
-  const blogId:string = apiEnv.blogId;
-  // Post総件数取得
-  const postCntUrl = apiEnv.endpoint + blogId + "/info?api_key=" + apiKey;
-  const res = await fetch(
-    postCntUrl,
-    {
-      method: "GET"
-    }
-  );
-  const totalCount = (await res.json() as TumblrInfo).response.blog.total_posts;
-  
-  return totalCount;
-}
-
-// POSTルート作成
-export async function useGetPostsRoute(apiEnv:ApiEnv, inTotalCount:number|null):Promise<string[]>{
-  const apiKey:string = apiEnv.apiKey;
-  const blogId:string = apiEnv.blogId;
-  // Post総件数取得
-  const totalCount = inTotalCount ? inTotalCount : await useGetPostCountSv(apiEnv);
-
-  // Postルート作成
-  // 取得件数
-  const pageLimit = 20;
-  // 総ページ数
-  const maxPage = Math.ceil(totalCount / pageLimit);
-  
-  const ids:string[] = [];
-  const tags:string[] = [];
-  // ページ数分繰り返し
-  for(let i = 0; i < maxPage; i++)
-  {
-    const offset = pageLimit * i;
-    const url = apiEnv.endpoint + blogId + "/posts?api_key=" + apiKey + "&limit=" + pageLimit + "&offset=" + offset;
-
-    // API連続call抑止
-    await new Promise(res => setTimeout(res, 1000));
-
-    // API call
-    const res = await fetch(
-      url,
-      {
-        method: "GET"
-      }
-    );
-    const posts:BlogPost[] = (await res.json() as TumblrPosts).response.posts;
-    // id一覧作成
-    posts.forEach(post => {
-      ids.push(post.id_string);
-      post.tags.forEach(tag => {
-        tags.push(tag);
-      })
-    });
-  }
-  // postルート
-  const postRoutes = ids.map((id:string) => `/post/${id}/`);
-  return postRoutes;
-
-  //-- タグページのルーティング、ページ数が多すぎてAPI制限に引っかかるため使用しない
-  // // タグ重複カット
-  // const outTags = Array.from(new Set(tags));
-  // const tagRoutesBase = await useGetTagsIndexRoute(apiEnv, outTags);
-  // // タグルート
-  // const tagRoutes = tagRoutesBase.map((obj:{tag:string, page:number}) => `/tags/${obj.tag}/${obj.page}`)
-
-  // return postRoutes.concat(tagRoutes);
-}
-
 // POSTSルート作成
 export async function useGetPostsIndexRoute(totalCount:number, pageLimit:number):Promise<string[]>
 {
@@ -93,6 +21,8 @@ export async function useGetPostsIndexRoute(totalCount:number, pageLimit:number)
 export async function useCrawlAllPages(apiEnv: ApiEnv) {
   const cache: Record<string, any[]> = {}
   const routes: string[] = []
+  const postRoutes: string[] = []
+
   let page = 1
   let nextUrl: string | null =
     `${apiEnv.endpoint}${apiEnv.blogId}/posts?api_key=${apiEnv.apiKey}&limit=${apiEnv.pageLimit}`
@@ -121,6 +51,7 @@ export async function useCrawlAllPages(apiEnv: ApiEnv) {
     // キャッシュに個別のPOSTも保存
     json.response.posts.forEach((post: any) => {
       cache[`/post/${post.id_string}/`] = post
+      postRoutes.push(`/post/${post.id_string}/`)
     })
 
     const nextHref = json.response._links?.next?.href
@@ -134,7 +65,7 @@ export async function useCrawlAllPages(apiEnv: ApiEnv) {
 
     page++
   }
-  return { routes, cache }
+  return { routes, cache, postRoutes }
 }
 
 
